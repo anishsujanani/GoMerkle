@@ -13,7 +13,7 @@ type MerkleNode struct {
 }
 
 func MerkleTree(Content string, LeafSize int) MerkleNode {
-	var rawContentChunks []string = getChunks(Content, LeafSize)
+	var rawContentChunks []string     = getChunks(Content, LeafSize)
 	var pendingInsertion []MerkleNode = formUnlinkedMerkleNodes(rawContentChunks)
 
 	return consumePendingInsertionIntoTree(pendingInsertion)
@@ -21,7 +21,7 @@ func MerkleTree(Content string, LeafSize int) MerkleNode {
 
 func consumePendingInsertionIntoTree(pendingInsertion []MerkleNode) MerkleNode {
 	var newLevelNodes []MerkleNode
-	
+
 	// if we ever have an odd number of nodes, we need to balance
 	if lenPendingInsertion := len(pendingInsertion); lenPendingInsertion % 2 == 1 && lenPendingInsertion != 1 {
 		pendingInsertion = append(pendingInsertion, MerkleNode{})
@@ -29,18 +29,18 @@ func consumePendingInsertionIntoTree(pendingInsertion []MerkleNode) MerkleNode {
 
 	// else iterate in pairs, form hash, link left and right child
 	for i := 0; i < len(pendingInsertion); i += 2 {
-		var leftChild MerkleNode = pendingInsertion[i]
-		var rightChild MerkleNode = pendingInsertion[i+1]	
-		
+		var leftChild MerkleNode  = pendingInsertion[i]
+		var rightChild MerkleNode = pendingInsertion[i+1]
+
 		var rawContentChunks []string = []string{leftChild.GetRawText() + rightChild.GetRawText()}
-		
+
 		var newNode MerkleNode = formUnlinkedMerkleNodes(rawContentChunks)[0]
 		newNode.setLeftChild(leftChild)
 		newNode.setRightChild(rightChild)
-	
-		newLevelNodes = append(newLevelNodes, newNode) 
+
+		newLevelNodes = append(newLevelNodes, newNode)
 	}
-		
+
 	// all nodes for the current level, retrieved from pendingInsertion have been consumed
 	// set the new level just formed (newLevelNodes) as the new pendingInsertion and recursively call this func
 	// if we have more nodes to process
@@ -55,10 +55,10 @@ func consumePendingInsertionIntoTree(pendingInsertion []MerkleNode) MerkleNode {
 func formUnlinkedMerkleNodes(rawContentChunks []string) []MerkleNode {
 	var nodeList []MerkleNode
 	for _, chunk := range rawContentChunks {
-		nodeList = append(nodeList, MerkleNode {
-			hash: computeHash([]byte (chunk)),
-			rawtext: chunk,
-			leftchild: nil,
+		nodeList = append(nodeList, MerkleNode{
+			hash:       computeHash([]byte(chunk)),
+			rawtext:    chunk,
+			leftchild:  nil,
 			rightchild: nil})
 	}
 	return nodeList
@@ -112,5 +112,3 @@ func (m MerkleNode) String() string {
 		"RawText:\t\t%v\nHash:\t\t\t%v\nLeftChild.RawText:\t%v\nRightChild.RawText\t%v\n",
 		m.GetRawText(), m.GetHash(), (m.GetLeftChild()).GetRawText(), (m.GetRightChild()).GetRawText())
 }
-
-
