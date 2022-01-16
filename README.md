@@ -5,6 +5,11 @@ A merkle-tree implementation in Go.
 - Learning Go
 - Merkle trees are great
 
+## API
+```go
+// docs pending
+```
+
 ## Usage 
 ``` go
 package main
@@ -15,31 +20,31 @@ import (
 )
 
 func main() {
-	root := gomerkle.MerkleTree("abcdefghijklmnopqrstuvwxyz", 4); // content, leaf size
-	fmt.Println(root)
-	fmt.Println(root.GetLeftChild())
-	fmt.Println(root.GetRightChild())
+	root := gomerkle.MerkleTree("abcdefgh", 2);
+
+	fmt.Printf("-> Root node - default Print(): \n%v\n", root)
+	
+	fmt.Printf("-> Root node - raw text:\n%v\n\n", root.GetRawText())
+	
+	fmt.Printf("-> Left child of root - default Print(): \n%v\n", root.GetLeftChild())
+	
+	fmt.Printf("-> Right child of root - raw text: \n%v\n\n", (root.GetRightChild()).GetRawText())
+	
+	fmt.Printf("-> Tree height: \n%v\n\n", root.GetHeight())
+
+	fmt.Printf("-> Breadth First Search (level-wise ordering) - default Print(): \n%v\n\n", root.BreadthFirstSearch())
+
+	fmt.Printf("-> Depth First Search (preorder) - custom print: \n")
+	for _, node := range root.DepthFirstSearch("preorder") {
+		fmt.Printf("%v ", node.GetRawText())
+	}
+
+	fmt.Printf("\n\n-> DepthFirstSearch (inorder) - custom print: \n")
+	for _, node := range root.DepthFirstSearch("inorder") {
+		fmt.Printf("%v ", node.GetRawText())
+	}
+
+	fmt.Printf("\n\n-> Depth First Search (postorder) - custom print: \n%v\n", root.DepthFirstSearch("postorder"))
 }
 ```
-Output:
-```
-RawText:		abcdefghijklmnopqrstuvwxyz  
-Hash:			71c480df93d6ae2f1efad1447c66c9525e316218cf51fc8d9ed832f2daf18b73  
-LeftChild.RawText:	abcdefghijklmnop  
-RightChild.RawText	qrstuvwxyz  
-  
-RawText:		abcdefghijklmnop  
-Hash:			f39dac6cbaba535e2c207cd0cd8f154974223c848f727f98b3564cea569b41cf  
-LeftChild.RawText:	abcdefgh  
-RightChild.RawText	ijklmnop  
 
-RawText:		qrstuvwxyz  
-Hash:			f20641c45ff3e440f7bbbf2a2fb1538808fb8e80f929c24096ddbcd280bc1e8d  
-LeftChild.RawText:	qrstuvwx  
-RightChild.RawText	yz  
-```
-
-## API
-```go
-// docs pending
-```
