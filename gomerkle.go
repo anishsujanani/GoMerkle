@@ -1,3 +1,5 @@
+// Package gomerkle provides functions to create Merkle-trees and
+// perform common operations on the data structures involved.
 package gomerkle
 
 import (
@@ -12,6 +14,7 @@ type MerkleNode struct {
 	rightchild *MerkleNode
 }
 
+// MerkleTree creates the Merkle tree and returns the root node of type 'MerkleNode'.
 func MerkleTree(Content string, LeafSize int) MerkleNode {
 	var rawContentChunks []string     = getChunks(Content, LeafSize)
 	var pendingInsertion []MerkleNode = formUnlinkedMerkleNodes(rawContentChunks)
@@ -83,18 +86,22 @@ func computeHash(chunk_bytes []byte) string {
 	return fmt.Sprintf("%x", (sha256.Sum256(chunk_bytes)))
 }
 
+// GetRawText returns the raw-text of a MerkleNode.
 func (m MerkleNode) GetRawText() string {
 	return m.rawtext
 }
 
+// GetLeftChild returns the left-child of a MerkleNode.
 func (m MerkleNode) GetLeftChild() *MerkleNode {
 	return m.leftchild
 }
 
+// GetRightChild returns the right-child of a MerkleNode.
 func (m MerkleNode) GetRightChild() *MerkleNode {
 	return m.rightchild
 }
 
+// GetHash returns the SHa-256 hash of a MerkleNode's raw-text.
 func (m *MerkleNode) GetHash() string {
 	return m.hash
 }
@@ -107,14 +114,18 @@ func (m *MerkleNode) setRightChild(rc MerkleNode) {
 	m.rightchild = &rc
 }
 
-// Going down left subtrees only since we always insert a left child first
+// GetHeight returns the height of the Merkle tree.
 func (m MerkleNode) GetHeight() int {
+	// Going down left subtrees only since we always insert a left child first
 	if m.GetLeftChild() == nil {
 		return 1
 	}
 	return 1 + (m.GetLeftChild()).GetHeight()
 }
 
+// DepthFirstSearch returns a slice containing MerkleNode(s) gathered from 
+// a depth-first-search on the tree starting from the node it is invoked by.
+// Ordering is decided based on the input parameter: (preorder|inorder|postorder).
 func (m MerkleNode) DepthFirstSearch(order string) []MerkleNode {
 	var nodeList []MerkleNode
 	return m.dfs(&nodeList, order)
@@ -154,6 +165,9 @@ func (m MerkleNode) dfs(nodeList *[]MerkleNode, order string) []MerkleNode {
 	return *nodeList
 }
 
+// BreadthFirstSearch returns a slice of MerkleNode(s) gathered from
+// a level-wise ordering of the tree starting from the node it is 
+// invoked by. 
 func (m MerkleNode) BreadthFirstSearch() []MerkleNode {
 	var nodeList []MerkleNode = []MerkleNode{m}
 	var nodesByLevel []MerkleNode
@@ -179,6 +193,7 @@ func (m MerkleNode) BreadthFirstSearch() []MerkleNode {
 	return nodesByLevel
 }
 
+// Custom fmt.Print* function for the type MerkleNode.
 func (m MerkleNode) String() string {
 	var lcRawText string = "no_left_child"
 	var rcRawText string = "no_right_child"
