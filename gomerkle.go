@@ -210,7 +210,7 @@ func (m MerkleNode) GetNodeCount() int {
 
 // EqualTo returns the result of node hash equality. Calling this function
 // with nodes in corresponding positions in two trees will return the
-// equivalnce of those nodes, and therefore those sub-trees.
+// equivalence of those nodes, and therefore those sub-trees (if they are not leaves).
 func (m MerkleNode) EqualTo(t MerkleNode) bool {
 	return m.GetHash() == t.GetHash()
 }
@@ -229,7 +229,7 @@ func (m MerkleNode) GetInconsistentLeaves(t MerkleNode) []MerkleNode {
 		for i := range mLeaves {
 			// we could just check for struct equality, but using hashes
 			// to be consistent with the concept of merkle trees
-			if mLeaves[i].GetHash() != tLeaves[i].GetHash() {
+			if mLeaves[i].EqualTo(tLeaves[i]) {
 				differingNodesInT = append(differingNodesInT, tLeaves[i])
 			}
 		}
