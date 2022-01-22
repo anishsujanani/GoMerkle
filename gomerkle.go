@@ -1,6 +1,6 @@
 // Package gomerkle provides functions to create Merkle-trees and
 // perform common operations on the data structures involved.
-// Anish Sujanani, January 2022
+// Anish Sujanani, January 2022.
 package gomerkle
 
 import (

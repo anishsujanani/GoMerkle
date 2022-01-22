@@ -11,7 +11,8 @@ A merkle-tree implementation in Go.
 package gomerkle // import "github.com/anishsujanani/gomerkle"
 
 Package gomerkle provides functions to create Merkle-trees and perform
-common operations on the data structures involved.
+common operations on the data structures involved. Anish Sujanani, January
+2022.
 
 TYPES
 
@@ -35,8 +36,8 @@ func (m MerkleNode) DepthFirstSearch(order string) []MerkleNode
 
 func (m MerkleNode) EqualTo(t MerkleNode) bool
     EqualTo returns the result of node hash equality. Calling this function with
-    nodes in corresponding positions in two trees will return the equivalnce of
-    those nodes, and therefore those sub-trees.
+    nodes in corresponding positions in two trees will return the equivalence of
+    those nodes, and therefore those sub-trees (if they are not leaves).
 
 func (m *MerkleNode) GetHash() string
     GetHash returns the SHA-256 hash of a MerkleNode's raw-text.
