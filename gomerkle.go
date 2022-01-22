@@ -229,7 +229,7 @@ func (m MerkleNode) GetInconsistentLeaves(t MerkleNode) []MerkleNode {
 		for i := range mLeaves {
 			// we could just check for struct equality, but using hashes
 			// to be consistent with the concept of merkle trees
-			if mLeaves[i].EqualTo(tLeaves[i]) {
+			if !mLeaves[i].EqualTo(tLeaves[i]) {
 				differingNodesInT = append(differingNodesInT, tLeaves[i])
 			}
 		}
