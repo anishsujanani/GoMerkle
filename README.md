@@ -33,14 +33,32 @@ func (m MerkleNode) DepthFirstSearch(order string) []MerkleNode
     Ordering is decided based on the input parameter:
     (preorder|inorder|postorder).
 
+func (m MerkleNode) EqualTo(t MerkleNode) bool
+    EqualTo returns the result of node hash equality. Calling this function with
+    nodes in corresponding positions in two trees will return the equivalnce of
+    those nodes, and therefore those sub-trees.
+
 func (m *MerkleNode) GetHash() string
-    GetHash returns the SHa-256 hash of a MerkleNode's raw-text.
+    GetHash returns the SHA-256 hash of a MerkleNode's raw-text.
 
 func (m MerkleNode) GetHeight() int
     GetHeight returns the height of the Merkle tree.
 
+func (m MerkleNode) GetInconsistentLeaves(t MerkleNode) []MerkleNode
+    GetInconsistentLeaves returns a list of MerkleNode(s) from the 't' tree that
+    differ from the 'm' tree. It is advised to first check if the two trees are
+    the same height. If heights differ, there is no point in calling this
+    function as the 't' tree has obviously changed.
+
+func (m MerkleNode) GetLeaves() []MerkleNode
+    GetLeaves returns a list of MerkleNode(s) representing the leaves of the
+    tree built from the raw content.
+
 func (m MerkleNode) GetLeftChild() *MerkleNode
     GetLeftChild returns the left-child of a MerkleNode.
+
+func (m MerkleNode) GetNodeCount() int
+    GetNodeCount returns the total number of nodes present in the tree. (2^n)-1
 
 func (m MerkleNode) GetRawText() string
     GetRawText returns the raw-text of a MerkleNode.
@@ -62,7 +80,7 @@ import (
 )
 
 func main() {
-	root := gomerkle.MerkleTree("abcdefgh", 2);
+	root := gomerkle.MerkleTree("abcdefghijk", 2);
 
 	fmt.Printf("-> Root node - default Print(): \n%v\n", root)
 	
@@ -73,6 +91,10 @@ func main() {
 	fmt.Printf("-> Right child of root - raw text: \n%v\n\n", (root.GetRightChild()).GetRawText())
 	
 	fmt.Printf("-> Tree height: \n%v\n\n", root.GetHeight())
+
+	fmt.Printf("-> Node count: \n%v\n\n", root.GetNodeCount()) 
+
+	fmt.Printf("-> Leaves: \n%v\n\n", root.GetLeaves())
 
 	fmt.Printf("-> Breadth First Search (level-wise ordering) - default Print(): \n%v\n\n", root.BreadthFirstSearch())
 
@@ -87,6 +109,13 @@ func main() {
 	}
 
 	fmt.Printf("\n\n-> Depth First Search (postorder) - custom print: \n%v\n", root.DepthFirstSearch("postorder"))
+
+	t := gomerkle.MerkleTree("abxdefyhijz", 2)
+
+	fmt.Printf("-> Root equality: \n%v\n\n", root.EqualTo(t))
+
+	fmt.Printf("-> Nodes in target tree differing from root tree: \n%v\n", root.GetInconsistentLeaves(t))
 }
+
 ```
 

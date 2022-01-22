@@ -5,6 +5,7 @@ package gomerkle
 import (
 	"crypto/sha256"
 	"fmt"
+	"math"
 )
 
 type MerkleNode struct {
@@ -101,7 +102,7 @@ func (m MerkleNode) GetRightChild() *MerkleNode {
 	return m.rightchild
 }
 
-// GetHash returns the SHa-256 hash of a MerkleNode's raw-text.
+// GetHash returns the SHA-256 hash of a MerkleNode's raw-text.
 func (m *MerkleNode) GetHash() string {
 	return m.hash
 }
@@ -192,6 +193,51 @@ func (m MerkleNode) BreadthFirstSearch() []MerkleNode {
 
 	return nodesByLevel
 }
+
+// GetLeaves returns a list of MerkleNode(s) representing the leaves of the tree
+// built from the raw content.
+func (m MerkleNode) GetLeaves() []MerkleNode {
+	var levelOrderNodeList []MerkleNode = m.BreadthFirstSearch()
+	var cutoff int = int( math.Pow( 2.0, float64(m.GetHeight()-1) ) ) - 1
+	return levelOrderNodeList[cutoff:]
+}
+
+// GetNodeCount returns the total number of nodes present in the tree.
+// (2^n)-1
+func (m MerkleNode) GetNodeCount() int {
+	return int( math.Pow(2.0, float64(m.GetHeight()) ) ) - 1
+}
+
+// EqualTo returns the result of node hash equality. Calling this function
+// with nodes in corresponding positions in two trees will return the 
+// equivalnce of those nodes, and therefore those sub-trees.
+func (m MerkleNode) EqualTo(t MerkleNode) bool {
+	return m.GetHash() == t.GetHash()
+}
+
+// GetInconsistentLeaves returns a list of MerkleNode(s) from the 't' tree that differ
+// from the 'm' tree. It is advised to first check if the two trees are the same height.
+// If heights differ, there is no point in calling this function as the 't' tree has
+// obviously changed.
+func (m MerkleNode) GetInconsistentLeaves (t MerkleNode) []MerkleNode {
+	var differingNodesInT []MerkleNode
+
+	if (!m.EqualTo(t)) {
+		var mLeaves []MerkleNode = m.GetLeaves()
+		var tLeaves []MerkleNode = t.GetLeaves()
+
+		for i := range mLeaves {
+			// we could just check for struct equality, but using hashes
+			// to be consistent with the concept of merkle trees
+			if mLeaves[i].GetHash() != tLeaves[i].GetHash() {
+				differingNodesInT = append(differingNodesInT, tLeaves[i])
+			}
+		}
+	}
+
+	return differingNodesInT
+}
+
 
 // Custom fmt.Print* function for the type MerkleNode.
 func (m MerkleNode) String() string {
