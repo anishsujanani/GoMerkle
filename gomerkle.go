@@ -124,7 +124,7 @@ func (m MerkleNode) GetHeight() int {
 	return 1 + (m.GetLeftChild()).GetHeight()
 }
 
-// DepthFirstSearch returns a slice containing MerkleNode(s) gathered from 
+// DepthFirstSearch returns a slice containing MerkleNode(s) gathered from
 // a depth-first-search on the tree starting from the node it is invoked by.
 // Ordering is decided based on the input parameter: (preorder|inorder|postorder).
 func (m MerkleNode) DepthFirstSearch(order string) []MerkleNode {
@@ -167,8 +167,8 @@ func (m MerkleNode) dfs(nodeList *[]MerkleNode, order string) []MerkleNode {
 }
 
 // BreadthFirstSearch returns a slice of MerkleNode(s) gathered from
-// a level-wise ordering of the tree starting from the node it is 
-// invoked by. 
+// a level-wise ordering of the tree starting from the node it is
+// invoked by.
 func (m MerkleNode) BreadthFirstSearch() []MerkleNode {
 	var nodeList []MerkleNode = []MerkleNode{m}
 	var nodesByLevel []MerkleNode
@@ -198,18 +198,18 @@ func (m MerkleNode) BreadthFirstSearch() []MerkleNode {
 // built from the raw content.
 func (m MerkleNode) GetLeaves() []MerkleNode {
 	var levelOrderNodeList []MerkleNode = m.BreadthFirstSearch()
-	var cutoff int = int( math.Pow( 2.0, float64(m.GetHeight()-1) ) ) - 1
+	var cutoff int = int(math.Pow(2.0, float64(m.GetHeight()-1))) - 1
 	return levelOrderNodeList[cutoff:]
 }
 
 // GetNodeCount returns the total number of nodes present in the tree.
 // (2^n)-1
 func (m MerkleNode) GetNodeCount() int {
-	return int( math.Pow(2.0, float64(m.GetHeight()) ) ) - 1
+	return int(math.Pow(2.0, float64(m.GetHeight()))) - 1
 }
 
 // EqualTo returns the result of node hash equality. Calling this function
-// with nodes in corresponding positions in two trees will return the 
+// with nodes in corresponding positions in two trees will return the
 // equivalnce of those nodes, and therefore those sub-trees.
 func (m MerkleNode) EqualTo(t MerkleNode) bool {
 	return m.GetHash() == t.GetHash()
@@ -219,10 +219,10 @@ func (m MerkleNode) EqualTo(t MerkleNode) bool {
 // from the 'm' tree. It is advised to first check if the two trees are the same height.
 // If heights differ, there is no point in calling this function as the 't' tree has
 // obviously changed.
-func (m MerkleNode) GetInconsistentLeaves (t MerkleNode) []MerkleNode {
+func (m MerkleNode) GetInconsistentLeaves(t MerkleNode) []MerkleNode {
 	var differingNodesInT []MerkleNode
 
-	if (!m.EqualTo(t)) {
+	if !m.EqualTo(t) {
 		var mLeaves []MerkleNode = m.GetLeaves()
 		var tLeaves []MerkleNode = t.GetLeaves()
 
@@ -237,7 +237,6 @@ func (m MerkleNode) GetInconsistentLeaves (t MerkleNode) []MerkleNode {
 
 	return differingNodesInT
 }
-
 
 // Custom fmt.Print* function for the type MerkleNode.
 func (m MerkleNode) String() string {
